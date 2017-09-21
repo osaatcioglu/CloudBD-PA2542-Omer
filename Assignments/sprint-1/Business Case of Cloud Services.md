@@ -1,12 +1,26 @@
-# Business Case of Cloud Services
+Business Case of Cloud Services
+===============================
 
 Ömer Saatcioglu
-
 [osaatcioglu@gmail.com](mailto:osaatcioglu@gmail.com)
 
 076 7781155
 
-[TOC]
+<!-- TOC -->
+
+- [Introduction](#introduction)
+- [What is Cloud Computing](#what-is-cloud-computing)
+	- [Elasticity](#elasticity)
+	- [Metered Billing](#metered-billing)
+	- [Different cloud offerings](#different-cloud-offerings)
+- [Reasons for "Going to the Cloud"](#reasons-for-going-to-the-cloud)
+- [Scalable Software Architectures](#scalable-software-architectures)
+- [Filesystems](#filesystems)
+- [Databases](#databases)
+- [Security in the Cloud](#security-in-the-cloud)
+- [Conclusion](#conclusion)
+
+<!-- /TOC -->
 
 # Introduction
 
@@ -102,7 +116,7 @@ If we run the estimate cost for this system in a traditional IT concept. We will
 
 The usual lifecycle of a traditional IT component is between two to three years. Let's take 3 years for this example. So, the monthly expense will be $1,262. We should also consider monthly expenses such as network ($500) and power and cooling ($400). So, the total monthly cost adds up to **$2,162**.
 
-On the other hand, if we take Amazon Cloud as the cloud example by looking at two major offering from Amazon. (NOTE:  http://www.ec2instances.info/)
+On the other hand, if we take Amazon Cloud as the cloud example by looking at two major offering from Amazon. [^1]
 
 <table>
   <tr>
@@ -157,7 +171,7 @@ In terms of business perspective, we need to also talk about different type of c
 
 **Framework As A Service:** It is a service that is between SaaS and PaaS. The abstractions are more specific toward a language and Middleware (Framework) and the customizations are quite limited. But, the development is faster in this service compared to the PaaS. The line between PaaS and FaaS is pretty thin. So, it can be hard to distinguish such Services. As a rule of thumb, the FaaS should look like an unfinished SaaS that requires some small touches and rebranding. 
 
-**Infrastructure As A Service:** It is basically what most of the people calls cloud. It is the service that enables a general-purpose computing and/or storage to be used for any application. Vendor lock in is pretty small but the prices of these services are higher compared to a PaaS. Typical examples are AWS, Google Cloud Platform and Microsoft Azure which they provide all components needed by a modern IT infrastructure. There are also more recent companies like Digital Ocean and Wasabi (NOTE:  https://wasabi.com/pricing) that are cheaper but they provide specific service. For example, Wasabi only provides a storage par to AWS S3.
+**Infrastructure As A Service:** It is basically what most of the people calls cloud. It is the service that enables a general-purpose computing and/or storage to be used for any application. Vendor lock in is pretty small but the prices of these services are higher compared to a PaaS. Typical examples are AWS, Google Cloud Platform and Microsoft Azure which they provide all components needed by a modern IT infrastructure. There are also more recent companies like Digital Ocean and Wasabi[^2] that are cheaper but they provide specific service. For example, Wasabi only provides a storage par to AWS S3.
 
 # Reasons for "Going to the Cloud"
 
@@ -179,7 +193,7 @@ Scaling is an issue in a traditional IT Infrastructure as the provided service s
 
 Let's take the following system types one by one.
 
-1. **Computing Jobs:** Using cloud solution is very suitable for this type of system. This system requires intensive computing power when the data is present but it may not require it for most of the time. So, Elastic Scaling is an important attribute for this system. Moreover; It requires to have a queuing system between instances and Amazon provide a service called Amazon Simple Queue Service. There is also a new offering in Amazon that lets the user lease per second rather than per hour (NOTE:  https://aws.amazon.com/blogs/aws/new-per-second-billing-for-ec2-instances-and-ebs-volumes/) Availability is dependent on the amount of data to be processed. If it requires several instances can be created and later destroyed. Lastly, this system requires a reliable storage for the processed data and this can be provided by the cloud services.
+1. **Computing Jobs:** Using cloud solution is very suitable for this type of system. This system requires intensive computing power when the data is present but it may not require it for most of the time. So, Elastic Scaling is an important attribute for this system. Moreover; It requires to have a queuing system between instances and Amazon provide a service called Amazon Simple Queue Service. There is also a new offering in Amazon that lets the user lease per second rather than per hour[^3] Availability is dependent on the amount of data to be processed. If it requires several instances can be created and later destroyed. Lastly, this system requires a reliable storage for the processed data and this can be provided by the cloud services.
 
 2. **Computing Stream:** This type might have an evenly distributed work load through time so that Elastic Scaling might not be an important attribute. But, still, the cloud solution can provide benefit to the performance of the system. Moreover; the Scalability, Availability and Reliability are the same as in the first example.
 
@@ -251,9 +265,9 @@ NoSQL databases are key-value type of database. Which means that the database do
 
 Security is a big concern in a post-NSA technology world. Cloud Services provide anonymity by design and this is a big benefit for the security. Moreover; the cloud service providers are taking the security more seriously as it might hurt their business such as: 
 
-    1. Provide higher security measures in the physical presence of the servers
+1. Provide higher security measures in the physical presence of the servers
 
-    2. Provide client-server encryption by default as the customer will not share its data in the plain format.
+2. Provide client-server encryption by default as the customer will not share its data in the plain format.
 
 Yet, liabilities of the cloud services still exist. The RSA keys can be hacked and the cloud storage service can give access to unintended data due to bugs in their solutions. However; this kind of security breaches might be fixed much faster compared to a traditional IT infrastructure.
 
@@ -261,3 +275,8 @@ Yet, liabilities of the cloud services still exist. The RSA keys can be hacked a
 
 Cloud services have become a strong alternative to the traditional IT infrastructure. Cloud services are more complex because of the variety of new paradigms and methods that are introduced to improve the efficiency and comply to the new type of the business model. However; it is still compelling technologically since it is abstracting the hardware and put it under the control of the software. And, more importantly, it provides a much cheaper and better financial model (OPEX in comparison to CAPEX) to an increasing demand on the IT infrastructures. 
 
+[^1]: http://www.ec2instances.info/
+
+[^2]: https://wasabi.com/pricing
+
+[^3]: https://aws.amazon.com/blogs/aws/new-per-second-billing-for-ec2-instances-and-ebs-volumes/
