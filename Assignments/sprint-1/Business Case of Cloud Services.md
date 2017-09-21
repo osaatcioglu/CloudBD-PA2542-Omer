@@ -6,7 +6,7 @@
 
 076 7781155
 
-[[TOC]]
+[TOC]
 
 # Introduction
 
