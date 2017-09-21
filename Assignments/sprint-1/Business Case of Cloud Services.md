@@ -62,7 +62,7 @@ Because, the biggest advantages to the business side by switching to the cloud a
 
 An important business feature is metered billing. Let's take the system in Figure 1 as an example.
 
-![image alt text](image_0.png)
+![Figure 1: A Simple Example App](https://mickesv.github.io/cloudbd/BusinessCase/images/FSimpleApp.png)
 
 *Figure 1: A Simple Example App*
 
