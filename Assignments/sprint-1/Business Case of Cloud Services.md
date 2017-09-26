@@ -32,7 +32,7 @@ A service using cloud means that the service is located somewhere on Internet wh
 
 For a cloud infrastructure, all of the followings are necessary as they are reducing the cost and it is also lowering the barrier for the customer to enroll to the program.
 
-**Pooled Computing Resources:** The servers should be accessible by the intended users. 
+**Pooled Computing Resources:** The computer resources are acquired resources that are kept in the pool to be used by a client. Clients request the resource from the pool when needed and they return it back when they finish with the resource. This is beneficial for the performance when the resource is expensive to acquire. 
 
 **Virtualized Computing Resources:** The hardware should be virtualized using hypervisor technology to increase the utilization of the hardware. 
 
@@ -48,15 +48,17 @@ Not all of these advancements are based on technology. Even though, pooled resou
 
 ## Elasticity
 
-Let's take Elasticity as an example. Peak times are always nightmares for the teams managing a traditional IT infrastructure. Since, economically, it is not feasible and sometimes not even possible to plan a hardware setup that is suitable for the peak times, it is accepted that the peak times will push the limits of the servers and causing decrease on the performance. However; In the cloud setup, since it is super easy to launch several new instances in minutes, it is super easy to ramp up during peak times and then down grade when it is not needed anymore. Because of that, the performance does not get a hit due to financial reason and moreover, the IT department does not need to put an overhead for the future peak hours. So, it is both financially and technically a better solution compared to the traditional IT systems.
+Let's take Elasticity as an example. Peak times are always nightmares for the teams managing a traditional IT infrastructure. Since, economically, it is not feasible and sometimes not even possible to plan a hardware setup that is suitable for the peak times, it is accepted that the peak times will push the limits of the servers and causing decrease on the performance. However; In the cloud setup, since it is cheaper cost-wise and time-wise to launch several new instances in minutes, it is faster to ramp up during peak times and then down grade when it is not needed anymore. Because of that, the performance does not get a hit due to financial reason and moreover, the IT department does not need to put an overhead for the future peak hours. So, it is both financially and technically a better solution compared to the traditional IT systems.
 
-When it comes to scaling, there are majorly two different scaling scenarios: Quick scaling and slow scaling.
+When it comes to scaling, there are mainly two different scaling scenarios: Quick scaling and slow scaling.
 
 Oprah Effect is a good example for a quick scaling needs. Since, the IT requires major scaling in a very short time, Elastic Scaling becomes a life saver. To put it into a perspective, when North Korea tested the Hydrogen bomb and it was announced via South Korean news website, it created a major attention from all over the world that a national news company in a Far East Asia wouldn’t be able to prepare if it wouldn’t have an Elastic Scaling in place.
 
 On the other hand, slow scaling example can be any service (including SaaS) that has user acquisition as a business model. We can name a few without mentioning the obvious ones: Dropbox, Slack and Github. In this type of scaling scenario, unless the company already has a traditional IT infrastructure and they don’t see any need for scaling or upgrading in the foreseeable future, it would still be financially good option to switch to a cloud service.
 
 Because, the biggest advantages to the business side by switching to the cloud are converting CAPEX to OPEX and Elastic scaling. So, one of these advantages if not both should be required by the organization to make the move the cloud financially feasible option.
+
+Above all, the architecture of the service should be created in a way to support scaling. For example, if the app servers are designed to lock the database even for reading operation, adding more app servers will not speed up the service.
 
 ## Metered Billing
 
@@ -177,7 +179,7 @@ In terms of business perspective, we need to also talk about different type of c
 
 The followings are the top five reasons for a company to move to a cloud solution.
 
-1. **Reliability:** Fault Tolerance and Recoverability are the two import factors that a Cloud solution is superior compared to the traditional IT Infrastructure. A server can be created within minutes to recover a disaster for example.
+1. **Reliability:** Fault Tolerance and Recoverability are the two import factors that a Cloud solution is superior compared to the traditional IT Infrastructure. A server can be created within minutes to recover a disaster for example. However; Due to nature of the operation, there is always a chance that one of the instances to go down. So, the architecture of the service built for the cloud should be tolerant to these kind of faults. But, as said earlier, launching a new instance that is a snapshot of the failed instance takes minutes.
 
 2. **Security:** Security is surprisingly major advantage in the Cloud Service. Because of a big scale operation, the vendor can be more cautious and proactive against security breaches.
 
@@ -190,6 +192,12 @@ The followings are the top five reasons for a company to move to a cloud solutio
 # Scalable Software Architectures
 
 Scaling is an issue in a traditional IT Infrastructure as the provided service starts to grow or sees a spike in the usage. Once the scaling is done, down scaling also becomes expensive decision in terms of materials and man power. On the other hand, cloud services provide elastic scaling that it can be scaled up and scaled down based on the demand without having expensive operations and purchases.
+
+Scaling relies on the virtualization of the computer resources. Virtualization is done with the hypervisor technology. In a summary, hypervisor is the platform that enables to run multiple guest OSes in the host OS. Hypervisor technology can abstract hardware resources and create a virtualized hardware specifically for the guest OS. The abstraction can be done in software level, firmware level and hardware level. 
+
+The most efficient way is to abstract it in the hardware level, which is also called bare-metal hypervisor. This type of hardware is designed to run guest OS by default. So, it is highly optimized for this purpose. Cloud services are taking advantage of this technology to create virtual instances of the requested OS. Thus, scaling up and down in a cloud infrastructure is a matter of calling a process in the host OS of given hardware.
+
+On the other hand, the software level hypervisor is widely used by the developers to replicate the same environment as the target OS in the cloud. 
 
 Let's take the following system types one by one.
 
