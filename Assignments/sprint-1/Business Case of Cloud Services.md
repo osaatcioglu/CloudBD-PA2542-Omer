@@ -191,7 +191,7 @@ The followings are the top five reasons for a company to move to a cloud solutio
 
 # Scalable Software Architectures
 
-Scaling is an issue in a traditional IT Infrastructure as the provided service starts to grow or sees a spike in the usage. Once the scaling is done, down scaling also becomes expensive decision in terms of materials and man power. On the other hand, cloud services provide elastic scaling that it can be scaled up and scaled down based on the demand without having expensive operations and purchases.
+Scaling is an issue in a traditional IT Infrastructure as the provided service starts to grow or see a spike in the usage. Once the scaling is done, down scaling also becomes expensive decision in terms of materials and man power. On the other hand, cloud services provide elastic scaling that it can be scaled up and scaled down based on the demand without having expensive operations and purchases.
 
 Scaling relies on the virtualization of the computer resources. Virtualization is done with the hypervisor technology. In a summary, hypervisor is the platform that enables to run multiple guest OSes in the host OS. Hypervisor technology can abstract hardware resources and create a virtualized hardware specifically for the guest OS. The abstraction can be done in software level, firmware level and hardware level. 
 
@@ -201,15 +201,62 @@ On the other hand, the software level hypervisor is widely used by the developer
 
 Let's take the following system types one by one.
 
-1. **Computing Jobs:** Using cloud solution is very suitable for this type of system. This system requires intensive computing power when the data is present but it may not require it for most of the time. So, Elastic Scaling is an important attribute for this system. Moreover; It requires to have a queuing system between instances and Amazon provide a service called Amazon Simple Queue Service. There is also a new offering in Amazon that lets the user lease per second rather than per hour[^3] Availability is dependent on the amount of data to be processed. If it requires several instances can be created and later destroyed. Lastly, this system requires a reliable storage for the processed data and this can be provided by the cloud services.
+1. **Computing Jobs:** 
 
-2. **Computing Stream:** This type might have an evenly distributed work load through time so that Elastic Scaling might not be an important attribute. But, still, the cloud solution can provide benefit to the performance of the system. Moreover; the Scalability, Availability and Reliability are the same as in the first example.
+This solution requires intensive computing power when the data is present but the data may not be present all the time. So, using Elastic Scaling is crucial for this system. Two components are quite important. The Registering and Queueing Component is required and Amazon provides a service called Amazon Simple Queue Service. There is also a new offering in Amazon that lets the user lease per second rather than per hour[^3]. Moreover; since the availability is dependent on the amount of data to be processed, App Server Manager is needed to orchestrate the instances. Several instances can be created and later destroyed based on the work load. Lastly, this system requires a reliable storage for the processed data and this can be provided by the cloud services.
+
+This system could have a system design like the following by leveraging the cloud solutions. As one can see that the solution requires to have several components:
+
+- __Load Balancer:__ Essential to balance the requests among servers.
+- __Registering and Queueing Server:__ This is the component that saves the incoming data to the relevant database table and put the job in the queue which is also a dedicated table.
+- __AS Manager:__ App Server Manager is the one responsible to create and/or destroy App Server instances based on the current load in the queue
+- __App Server:__ This is the server that is actually doing the actual processing work
+- __Database:__ The noSQL database that is storing the data
+
+![System Type  Computing Jobs](http://www.plantuml.com/plantuml/png/RLDDZzem4BtxLupsN0vmv50jBAhK1Ig5L5mM3XCy0M-3dVg3LRJQ_zwnyx6aRKxspFDxRvwTH-VH-d2jX5U-8iWRv-aAFvkQvl1ahdNmIf_XsHHEY5DbWeJlsfFLvE5TV8YNZK49IwnGdyWU0Hriba8RIV2mexDYDXi9K4l80WMAcvpiZQnxYEYCQO2_brsMCpNROIAO7lzJd1t51tJSYxeUqIpodcSnecbxqtzR8x8SjgZnJBRZsWg97Wjqt5nrgrPdjUnrrjHCzbW5ubgIMU_R1aF-Cj3httTcRMV66OeXqOaqRthoDKQuMGwx3EQm8waidJnu0_v2W3TK5HPyOowb8B81pYfpoF562HW7IUdRxZPIzTKKe7HQ_ewt8dZcCS6EkE4yOCAMrbn7w37uczBANNhcBmSTQjPj3V2yFhXaeVTpVpuAp-67yQfi680-eLGNqq6NYPhQmnxThsuOb0sKnh8_JMzWD4E1jss3GofOYlrRq_3PThnG9pr-runYTmpl8F3vd0wwrtOGhrqozn1PnO-TkQOmiUfyyObkolPN7StOkYfZmNB9WJR9PnfW5BnOxuSi-9tSxsRYaRJaV_CF "System Type  Computing Jobs")
+
+2. **Computing Stream:** 
+
+This system is a bit different than the previous one as it is getting the data via stream. One can think that storing the data and then processing it is still a viable option. However; it might be inefficient if the stream takes long period and the processing may not even start before all data is stored. Instead, we can design the system like the following:
+
+- __Load Balancer:__ Essential to balance the requests among servers.
+- __AS Managing and Queueing Server:__ This is the component that manages the App Servers and also creating the pipeline rules for the App Server instances to follow during processing the data
+- __App Server:__ This is the server that is actually doing the actual processing work. The processed data is either written to the database or streamed to another App Server based on the rules defined by the AS Managing and Queueing Server.
+- __Database:__ The noSQL database that is storing the data
+
+![System Type  Computing Stream](http://www.plantuml.com/plantuml/png/ZPF1Rk8m48RlVeeHTv3Wc4DLQ3cie9MoMRXK7ARn0DO6EsjFwAAgxzwn4wAKxc5pIUoP-VwPtyvzOFJSd2fGRBWYA2w1wGI_BZLbyE1ETSF67g1WJtXIggnSe-67PVAM6DxLXtfPEzImm0fjINu7662zKDPfWj6yW2UqU8W8j1hoXXfAFF9dyc4KitF1W3mly-8fBmGkFGaAfhj_RizswWEk_Bh-WXAzdZK4jR7fzr0BKnePNp48yR7xQdcFYojlHPVn5gk6P2_XLjis82atGbUTOMJMHcRY5vRiF8oMOiSca4ywourIlQbZxTxi-2wwk5xqgnmo-4dQU2ePs04V2V2Cfi9NERQGJ51vdov3olaTgVpzBIjM2uNCcH8bfBETm8EycC1qFGVvaee_3SK1p1uiaIOzKOA-giY86HJOWMhlf2oGXkWdl1sDQBPAySnRdLJkpU78SQWCdXsR_KMIoGww0R8wG8XZ8gTzAJC1vFubliWF-rXkikwAfjoziLZTjjDvLbQ6BCTvV9nDRhiMqXJ6JPric_utoT9VJctjuz9Jx0zxnvHQRVl-v4eCLpDrB_F9N_S9 "System Type  Computing Stream")
 
 3. **User Silos:** This is a typical system of the web app services. The scaling and downscaling can be an issue when there is a higher demand of the user and other times lower. So, a cloud solution is a perfect fit for these types of services. Yet, the scaling might not need to be dramatic in most of the time like in Computing Jobs system type. Also, the cloud service can provide a huge benefit for this type of systems in terms of Availability and Reliability.
 
+- __Load Balancer:__ Essential to balance the requests among servers.
+- __Cache Server:__ Cache server keeps the cache for the most frequent and non-changing request so that the App Server doesn't need to compute the same request over and over.
+- __App Server:__ App Server is responding to the user's request and process the data before sending back to the Cache server to be cached and sent to the user.
+- __Database:__ The noSQL or SQL database that is storing the data
+
+![System Type  User Silos](http://www.plantuml.com/plantuml/png/PLAnRi8m4DtlAqxi6SY8gee4bWgcfcL132Q-jfQCdTeNMbJnxxt4IKHBfhFVlVVkdhECh0At9mjis19MbyXqmfTBGmjyZHImCjP7WDhwLkEJOmgE67_W2lkjLnfBPPMhAHnGHToMuBmcdArK_I5g5CuKugo3LfMGKBwzLFF3LEO7kEB0Afhc3wUOE58zEPbLd8ISiFazbCH0ArP75KLnFLH9RrsEUXkwP3jbMvAxNcwpIu2q_3CQVMwHF26vf01J9fdsNovxx4BObjD9LbpWCsaJg6PaZop1gBCoLXqbyDYl2zALjKrFNaW4JlTjWM9hkGS7jIAfSJ1qfg7dioLvD8tTrcZUq7d6kijVen8X-cx4MqCnMgogEujnhkxPZ7iV7g6xFTAjbYPh14Xg3-DGwn9WivjcbC1kJpainKn-iLy0 "System Type  User Silos")
+
 4. **User Silos with Post-Processing:** Scheduling tasks for post processing is crucial attribute of this system and most of the time the post processing might be preferred to be done at the time that the system is idle. The best case is to do in the "night time" and the recipient receives the output in the next day. This can be beneficial in the cloud solution as the CPU utilization is evenly distributed. Moreover; Availability and Reliability are major advantage when moving to the cloud.
 
-5. **Networks of Users:** There are several methods to achieve fast interactivity and not to overload the servers. One example is webRTC. In this method, the server is the connector between clients and once the connection is established, all the communication goes directly from client to client without requiring the server. This is beneficial if the service is chat application and the data is transient. However; If the service is FB like service, then the server needs to get the data and save it also to be reachable later and it may even be reachable to other clients within user permissions. Cloud Services can have a great benefit here in terms of scalability and data storage. And Availability and Reliability are major advantage as in the fourth example.
+- __Load Balancer:__ Essential to balance the requests among servers.
+- __Cache Server:__ Cache server keeps the cache for the most frequent and non-changing request so that the App Server doesn't need to compute the same request over and over.
+- __App Server:__ App Server is responding to the user's request and process the data before sending back to the Cache server to be cached and sent to the user.
+- __Post Processor Server:__ This component is responsible to process the task assigned by the App Server and notify the user to retrieve the data at the end of the task.
+- __Database:__ The noSQL or SQL database that is storing the data
+
+![System Type  User Silos with Post-Processing](http://www.plantuml.com/plantuml/png/RLCzRzim4DtvAmxUDSHZK1InR0-1ZKAeQY-91reyDKHfKYLFJeqY_xr7YXBiEfge-tZltJloAP3qr9-C84q6eRu4mXFyk7Ju2Bk07cfjN81tJMzGkK15vLs38MZxKpJ6zGgUBQ6tIF1NV8YNhPCAIccaRT0VG0RObi8wXJ1RokQD6T2VqOTPJ2rhRWB-NlZqS9YEyuFuWDorwBgRdiNKmwTdo_gPYPk7tCDzQW1JakHH1WPSvTC0jof7k0rUYhqqFN8ieMtsGu9B_kCPQQupyo4pPnC6uT4jo6uvVpD3LOsaLNKpn2V1A5_8XXXYjhOgBIM1h7TYihvGxjqMNwFNstBwOoSVuJigxR4X80V4_ikpr4OUUTSXAH9SLVHTQkRo6faZrdaClQ6KpN2B0OwynZFccjyzyeLH4ErzjRe5wmYQk6W5af7mJyViIYn6acLznp4gY_U3hrLswjLo-8ZNO0gDvWp3iO6ZgbMPL2KX885a-0MjTwS4oL7UP-pjXaM0fhlcMkPnSaqUvxfklUEwRuvqUqcLVNmPBQya_hJQwX0rHkuuwPVFuTE5wARdCqZDiuSuP6-6C2z7RFOJET-swx-vU6B_-Cd-0m00 "System Type  User Silos with Post-Processing")
+
+
+5. **Networks of Users:** There are several methods to achieve fast interactivity and not to overload the servers. One example is webRTC. In this method, the server is the connector between clients and once the connection is established, all the communication goes directly from client to client without requiring the server. This is beneficial if the service is chat application and the data is transient. However; If the service is Facebook like service, then the server needs to get the data and save it also to be reachable later and it may even be reachable to other clients within user permissions. Cloud Services can have a great benefit here in terms of scalability and data storage. And Availability and Reliability are major advantage as in the fourth example.
+
+I will take the Facebook like services as an example. A typical system design could be like the following. It looks, initially, very similar to the User Silos system. However; Since there is an ongoing interaction in the User's device, the design requires the client app to be interactive, ie. request data from the server through API frequently.
+
+- __Load Balancer:__ Essential to balance the requests among servers.
+- __Cache Server:__ Cache server keeps the cache for the most frequent and non-changing request so that the App Server doesn't need to compute the same request over and over. Typical examples are the HTML views/pages to be loaded before the app/browser can start to compute to process the data.
+- __App Server:__ App Server is responding to the user's request and process the data before sending back to the Cache server to be cached and sent to the user.
+- __Database:__ The noSQL or SQL database that is storing the data
+- __End User's Client:__ End User's client can be a native app or a browser that has the capability to retrieve data from async requests through APIs and it can process the data to show to the user.
+
+![System Type  User Networks of Users](http://www.plantuml.com/plantuml/png/RLF1Ri8m3BtdAopk7E28feaME23GXCRWWZY4na2qa7H92a8J_pudQQkohIV7VdxFprR7pdFhgujYNdg5iBuxZnVuk9SuWer32s_eRyP-EZ37c72C5zvOwCsqY8aUS0Up3Tij3HUGSyLrWNOViikSQICGUXDUd8aSxPK8OiDa3TyCwDjHDDYtuN3F7b1tPMNvr9ErFHJDDOrEIjISQeE_fKGckES7xeXmMaU9RfetT0kyzxTSLKYvoBROfW91VkaqCjtAC5M6xC5c6-WBSzFzrs1-cRSliZQ2TnJIOk716_2q47xbKl43xTr5cunG_QeaEF6CoBiMKfyYj0WR572LU7CWZp5dyQj2vq4wKBJx1Xem4AbgxInf9_2HRXTGOIl_474DsMfESagnh9bciax3r61NgTP2k6mGJdSAsKCxBASEWKfI0KNNsxErE4bD5qGgrnALrXJe774TxWcBLrbWNBELfxElwLO9rp6cE_0uY3kR6yXsxY0I3BuqIvhcRB5jLqPdxhw6R4oJqM_o0m00 "System Type  User Networks of Users")
 
 # Filesystems
 

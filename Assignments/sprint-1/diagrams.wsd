@@ -1,0 +1,164 @@
+@startuml
+title System Type: Computing Jobs
+
+cloud Internet {
+}
+[Load Balancer] as LB
+node "Registering and Queueing Servers" as Q {
+    [RQS Instance 1]
+    [RQS Instance 2]
+} 
+node "App Servers" as AS {
+    [AS Instance 1] as AS1
+    [AS Instance 2]
+} 
+node "AS Manager" as ASM
+database "Databases" as DB {
+    [Key-Value DB] as KV
+    [DB Instance 1] as S1
+    [DB Instance 2] as S2
+}
+
+Internet -down-> LB
+LB -down-> Q : Redirect to the available server
+Q -down-> DB : Save the data and register the job in the queue
+ASM -down-> DB : Request a job from the queue
+AS -down-> DB : Finish the job,\nupdate the status and the data
+AS -down-> ASM : Notify that the instance\nfinished the task and ready for a new one\n or ready to be destroyed 
+ASM -up-> AS: Create or destroy App Server\ninstances based on the job load
+AS1 -right-> AS1 : Destroy the instance\nif there is no new task in the queue
+
+KV -down-> S1
+KV -down-> S2
+@enduml
+
+@startuml 
+title System Type: Computing Stream
+
+cloud Internet {
+}
+[Load Balancer] as LB
+node "AS Managing and Queueing Servers" as Q {
+    [ASMQS Instance 1]
+    [ASMQS Instance 2]
+} 
+node "App Servers" as AS {
+    [AS Instance 1] as AS1
+    [AS Instance 2]
+} 
+
+database "Databases" as DB {
+    [Key-Value DB] as KV
+    [DB Instance 1] as S1
+    [DB Instance 2] as S2
+}
+actor "End User" as EU
+
+Internet -down-> LB
+LB -down-> Q : Redirect to the available server
+Q -down-> AS : Check available server to receive the stream. Create instances in sequence if needed.
+AS -down-> DB : Save the processed data while receiving stream
+AS -right-> Q: Notify when the stream ends so that the AS is closed down
+AS -down-> EU: Stream the final processed data to the client if requested
+AS1 -up-> AS1: Stream the final processed data to the next AS if there is a sequence
+
+KV -down-> S1
+KV -down-> S2
+@enduml
+
+@startuml
+title System Type: User Silos
+
+cloud Internet {
+}
+[Load Balancer] as LB
+node "Cache Servers" as CS {
+    [CS 1]
+    [CS 2]
+} 
+node "App Servers" as AS {
+    [AS Instance 1] as AS1
+    [AS Instance 2]
+} 
+
+database "Databases" as DB {
+    [Key-Value DB] as KV
+    [DB Instance 1] as S1
+    [DB Instance 2] as S2
+}
+
+Internet -down-> LB
+LB -down-> CS : Redirect to the available server
+CS -up-> LB: Send the result
+CS -down-> AS : Retrieve the requested data if not cached and expired
+AS -up-> CS: Send the result to the Caching Server to be cached and delivered
+AS <-down-> DB
+
+KV -down-> S1
+KV -down-> S2
+@enduml
+
+@startuml
+title System Type: User Silos with Post-Processing
+cloud Internet {
+}
+[Load Balancer] as LB
+node "Cache Servers" as CS {
+    [CS 1]
+    [CS 2]
+} 
+node "App Servers" as AS {
+    [AS Instance 1] as AS1
+    [AS Instance 2]
+} 
+database "Databases" as DB {
+    [Key-Value DB] as KV
+    [DB Instance 1] as S1
+    [DB Instance 2] as S2
+}
+node "Post Processor Servers" as PP {
+    [PPS Instance 1]
+    [PPS Instance 2]
+}
+actor "End User" as EU
+Internet -down-> LB
+LB -down-> CS : Redirect to the available server
+CS -up-> LB : Send the result
+CS -down-> AS : Retrieve the requested data\nif not cached and expired
+AS -up-> CS: Send the result to the Caching Server\nto be cached and delivered
+PP -down-> DB : Request a task from the queue and process it
+PP -down-> DB : Save the processed data
+PP -down-> EU : Notify the user for the finished task
+AS <-down-> DB : Save the Post processing task to the scheduling table
+KV -down-> S1
+KV -down-> S2
+@enduml
+
+@startuml
+title System Type: User Networks of Users
+actor "End User" as EU
+[Load Balancer] as LB
+node "Cache Servers" as CS {
+    [CS 1]
+    [CS 2]
+} 
+node "App Servers" as AS {
+    [AS Instance 1] as AS1
+    [AS Instance 2]
+} 
+database "Databases" as DB {
+    [Key-Value DB] as KV
+    [DB Instance 1] as S1
+    [DB Instance 2] as S2
+}
+EU -down-> LB
+LB -down-> CS : Redirect to the available server
+CS -up-> EU : Sending the cached views if the request is loading the view 
+CS -down-> AS : Request for the data if the request is an API call
+AS -up-> CS: Send the result to the Caching Server to be cached and delivered
+CS -up-> EU: Sending the data to the end user to be processed by the device
+EU -right-> EU: Process the data in the device and show it to the user
+AS <-down-> DB
+KV -down-> S1
+KV -down-> S2
+@enduml
