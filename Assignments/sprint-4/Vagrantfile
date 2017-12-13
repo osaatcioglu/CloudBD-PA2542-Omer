@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+def create_vm(config, node_name)
+  config.vm.define node_name do |vm|
+    vm.vm.box = "hashicorp/precise64"
+    vm.vm.host_name = node_name
+  end
+end  
+
+Vagrant.configure("2") do |config|
+  config.vm.provision "puppet"
+
+  # create the vms
+  create_vm(config, "appserver")
+  create_vm(config, "dbserver")
+  create_vm(config, "web")
+  for i in 0..2
+    create_vm(config, "tst#{i}")
+  end
+
+  # do the port forwarding for the web vm
+  config.vm.define "web" do |vm|
+    vm.vm.network :forwarded_port, guest: 80, host: 8080
+  end
+end
