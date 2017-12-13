@@ -8,6 +8,6 @@ The following screenshot shows the output from the Puppet actions. Note that, th
 
 ![Puppet output in console](https://i.imgur.com/eYKI8oG.png)
 
-I learned how to use Puppet in an efficient way which gave me insights on how to manage multiple instances automatically.
+Puppet is a powerful tool that helps to install, run and check the applications in the virtual machine. Before learning Puppet, I had to do all the installations manually. Or even I used Vagrant shell script to install, I would need to check if everything is running as expected by myself. 
 
 *Note:* I committed first the given Vagrantfile and then I changed the instructions to Puppet in the following commit. Please check the repo history for the details.
