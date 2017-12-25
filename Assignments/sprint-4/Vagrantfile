@@ -5,6 +5,7 @@ def create_vm(config, node_name)
   config.vm.define node_name do |vm|
     vm.vm.box = "hashicorp/precise64"
     vm.vm.host_name = node_name
+    vm.vm.network "private_network", type: "dhcp"
   end
 end  
 
