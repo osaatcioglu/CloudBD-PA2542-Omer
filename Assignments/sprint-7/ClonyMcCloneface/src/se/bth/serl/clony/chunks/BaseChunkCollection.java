@@ -43,8 +43,10 @@ public abstract class BaseChunkCollection {
 	
 	public abstract boolean isEmpty();
 	
-	//TODO implement expansion. HINT: think recursively
 	protected int expand(List<Chunk> a, List<Chunk> b) {
+		if (a.size() > 0 && b.size() > 0 && a.get(0).getChunkContent().equals(b.get(0).getChunkContent())) {
+			return 1 + expand(a.subList(1, a.size()), b.subList(1, b.size()));
+		}
 		return 0;
 	}
 }

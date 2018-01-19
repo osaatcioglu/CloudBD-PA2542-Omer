@@ -25,10 +25,12 @@ package se.bth.serl.clony.processors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import se.bth.serl.clony.chunks.BaseChunkCollection;
+import se.bth.serl.clony.chunks.Chunk;
 
 /**
  * 
@@ -53,6 +55,11 @@ public class SourceProcessor {
 		
 		try {
 			this.listOfJavaFiles = Files.walk(rootFolder, Integer.MAX_VALUE).filter(Files::isRegularFile).filter(p -> p.toString().endsWith(".java")).collect(Collectors.toList());
+			this.listOfJavaFiles.sort(new Comparator<Path>() {
+				public int compare(Path a, Path b) {
+					return a.getFileName().compareTo(b.getFileName());
+				}
+			});
 			this.totalFilesToProcess = listOfJavaFiles.size();
 		}
 		catch(IOException e) {
@@ -61,14 +68,27 @@ public class SourceProcessor {
 	}
 	
 	public BaseChunkCollection populateChunkCollection() {
-		if(chunkCollection.isEmpty() && totalFilesToProcess > 0) {				
-			for(Path p : listOfJavaFiles) {
+		if(chunkCollection.isEmpty() && totalFilesToProcess > 0) {
+		String originId;
+		StringBuilder chunkContentBuilder = new StringBuilder();
+		int firstRawLineNumber;
+		int lastRawLineNumber;
+		Chunk chunk;
+		for(Path p : listOfJavaFiles) {
 				SourceReader sr = new SourceReader(p);
 				List<SourceLine> sourceLines = sr.getOnlySourceWithContent();
 				int numLines = sourceLines.size();
-				
-				// TODO iterate over the sourceLines, create chunks and add them to the chunkCollection
-					
+				originId = p.toString();
+				for (int index = 0; (index + chunkSize - 1) < numLines; index++) {
+					firstRawLineNumber = index;
+					lastRawLineNumber = firstRawLineNumber + chunkSize - 1;
+					chunkContentBuilder.setLength(0);
+					for (int i = firstRawLineNumber; i <= lastRawLineNumber; i++) {
+						chunkContentBuilder.append(sourceLines.get(i).getContent());
+					}
+					chunk = new Chunk(originId, chunkContentBuilder.toString(), firstRawLineNumber, lastRawLineNumber);
+					chunkCollection.addChunk(chunk);
+				};
 				totalLinesProcessed += sourceLines.size();
 				currentFilesProcessed++;
 				
