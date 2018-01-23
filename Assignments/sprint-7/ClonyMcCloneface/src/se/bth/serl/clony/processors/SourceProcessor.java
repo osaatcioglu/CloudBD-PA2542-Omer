@@ -71,8 +71,8 @@ public class SourceProcessor {
 		if(chunkCollection.isEmpty() && totalFilesToProcess > 0) {
 		String originId;
 		StringBuilder chunkContentBuilder = new StringBuilder();
-		int firstRawLineNumber;
-		int lastRawLineNumber;
+		int firstRaw;
+		int lastRaw;
 		Chunk chunk;
 		for(Path p : listOfJavaFiles) {
 				SourceReader sr = new SourceReader(p);
@@ -80,13 +80,16 @@ public class SourceProcessor {
 				int numLines = sourceLines.size();
 				originId = p.toString();
 				for (int index = 0; (index + chunkSize - 1) < numLines; index++) {
-					firstRawLineNumber = index;
-					lastRawLineNumber = firstRawLineNumber + chunkSize - 1;
+					firstRaw = index;
+					lastRaw = firstRaw + chunkSize - 1;
 					chunkContentBuilder.setLength(0);
-					for (int i = firstRawLineNumber; i <= lastRawLineNumber; i++) {
+					for (int i = firstRaw; i <= lastRaw; i++) {
 						chunkContentBuilder.append(sourceLines.get(i).getContent());
 					}
-					chunk = new Chunk(originId, chunkContentBuilder.toString(), firstRawLineNumber, lastRawLineNumber);
+					chunk = new Chunk(originId, 
+						chunkContentBuilder.toString(), 
+						sourceLines.get(firstRaw).getLineNumber(), 
+						sourceLines.get(lastRaw).getLineNumber());
 					chunkCollection.addChunk(chunk);
 				};
 				totalLinesProcessed += sourceLines.size();
